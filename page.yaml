@@ -1,0 +1,59 @@
+# page.yaml: the words on your page, kept as data like everything else.
+# make_page.py puts each answer under its question. A few sentences each, in your own words;
+# leave a blank line between paragraphs. Refer to YOUR network and YOUR evidence.
+# Never put your name or full student ID here: the page is public.
+
+repository: https://github.com/kqkq2004/netlab
+
+answers:
+  planes:
+    question: "Where are the data, control and management planes in your network?"
+    answer: |
+      The data plane is s1, s2 and s3, forwarding frames using their MAC tables.
+      There is no central control plane (controller=None); each bridge just does
+      its own MAC learning. The management plane is topology.yaml plus the scripts
+      that check, build and document the network.
+  learning:
+    question: "How did your switches learn which port leads to each host? Use your MAC table evidence."
+    answer: |
+      Each switch records the source MAC of every frame and the port it arrived on.
+      My macs.txt shows h1 on port 1 and h2 on port 2 of s1, while h3 to h6 are all
+      on port 3, because from s1 they are all behind the link to s2.
+  kind:
+    question: "Which of the four kinds of programmability is this assignment (a network described as data, then built and documented by scripts)? Why isn't it any of the other three?"
+    answer: |
+      It is network automation: programming the management plane with data and
+      scripts. It isn't control-plane programmability, because the bridges still
+      learn on their own with no controller, and it isn't data-plane
+      programmability, because nothing changes how packets are processed. The
+      switches themselves expose no programmable interface; only the description is
+      programmable.
+  two_am:
+    question: "Week 1's 2 a.m. change on 40 switches: what would be different if those switches were described like your network?"
+    answer: |
+      The change would be one edit to one file instead of forty CLI sessions.
+      check() would catch mistakes before any switch is touched, git diff shows
+      exactly what changes, and Git can roll it back if something goes wrong.
+  model:
+    question: "What's the difference between your network's data model and its serialisation? Use YAML and JSON as the example."
+    answer: |
+      The data model is the switches, hosts, addresses and links themselves; the
+      serialisation is how they are written as text. topology.yaml and
+      topology.json hold the same model and build the same network, but the JSON
+      version lost my comments and is harder to edit by hand.
+  check:
+    question: "Why is it better to catch bad data in check() than with pingall? What did IPv6 notice about a duplicate address that IPv4 didn't?"
+    answer: |
+      pingall only shows symptoms after building, and a duplicate address caused just
+      one failure in twelve. check() stops bad data before building and names the
+      problem: my check.txt reports h6 and h5 both using 10.66.0.5 and fd00:4966::5,
+      and a link to s9, which doesn't exist.
+
+      In dad.txt, IPv6 marked the copied fd00:4966::1 as dadfailed, while IPv4
+      accepted 10.66.0.1 alongside 10.66.0.2 without any warning.
+  git:
+    question: "What does your Git history give you that copying files into folders named topology-v2-final wouldn't?"
+    answer: |
+      Each commit records what changed, when and why, and git diff shows the exact
+      lines. I can return to any version. Copied folders don't explain what changed,
+      and it's never clear which "final" is real.
