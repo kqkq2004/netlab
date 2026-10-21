@@ -73,6 +73,13 @@ def check(spec):
                 problems.append(f"{host['name']} and {seen[address]} both use {address}")
             else:
                 seen[address] = host["name"]
+        # Every link must name a switch or host that exists.
+    # A link to s9 when there's no s9 is valid YAML, but not a correct network.
+    known = set(spec["switches"]) | {host["name"] for host in spec["hosts"]}
+    for a, b in spec["links"]:
+        for end in (a, b):
+            if end not in known:
+                problems.append(f"link {a} - {b} names {end}, which doesn't exist")         
     return problems
 
 

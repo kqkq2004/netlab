@@ -1,0 +1,4 @@
+PROBLEM: h6 and h5 both use 10.66.0.5
+PROBLEM: h6 and h5 both use fd00:4966::5
+PROBLEM: link s3 - s9 names s9, which doesn't exist
+Fix the description and try again.

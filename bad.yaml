@@ -1,0 +1,55 @@
+# topology.yaml — a small network described as data.
+# build_topo.py reads this file and creates exactly this network in Mininet.
+#
+# Make it yours first (see "Your addresses" in the lab):
+#   NNNN = the last 4 digits of your student ID, e.g. 4207
+#   NN   = the last 2 digits, without a leading zero, e.g. 7
+# Replace every NNNN and NN below. Don't put your full student ID here: this file
+# goes in your repository, which may be public.
+
+# topology.yaml: my Week 2 network
+# build_topo.py builds it in Mininet; make_page.py turns it into my web page.
+# Design: three switches in a line (s1 - s2 - s3), two hosts on each.
+# A line, not a ring: the switches are plain Linux bridges without STP,
+# so a loop would make broadcasts circle forever.
+# All hosts share one /24 because the whole network is one Ethernet (layer 2) segment.
+
+student_id_last4: "4966"
+
+switches:
+  - s1
+  - s2
+  - s3
+
+hosts:
+  - name: h1
+    ip: 10.66.0.1/24
+    ipv6: fd00:4966::1/64
+  - name: h2
+    ip: 10.66.0.2/24
+    ipv6: fd00:4966::2/64
+  - name: h3
+    ip: 10.66.0.3/24
+    ipv6: fd00:4966::3/64
+  - name: h4
+    ip: 10.66.0.4/24
+    ipv6: fd00:4966::4/64
+  - name: h5
+    ip: 10.66.0.5/24
+    ipv6: fd00:4966::5/64
+  - name: h6
+    ip: 10.66.0.5/24
+    ipv6: fd00:4966::5/64
+
+# Each link joins two nodes. Host links first, so on s1 port 1 = h1, port 2 = h2,
+# and port 3 = the link to s2.
+links:
+  - [h1, s1]
+  - [h2, s1]
+  - [h3, s2]
+  - [h4, s2]
+  - [h5, s3]
+  - [h6, s3]
+  - [s1, s2]
+  - [s2, s3]
+  - [s3, s9]
