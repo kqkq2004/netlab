@@ -1,0 +1,83 @@
+# network.yaml: your routed network, as data. A starting point to change into your own design.
+#
+#   python3 build_routed.py network.yaml      checks it, then builds it in Mininet
+#   python3 make_page3.py network.yaml        checks it, then writes docs/week3/index.html
+#
+# Replace NNNN and every NN (see "Your addresses"). Don't put your full student ID here.
+#
+# Each LAN has one router (.1 on the LAN) and one host (.10).
+# On each link, the first router named is .1 and the second is .2.
+# This starting point is the lab's network without r3. It works, but it doesn't meet the
+# assignment's requirements: that's your job.
+
+# Design: four routers in a ring, r1 - r2 - r3 - r4 - r1, so every pair of routers
+# has two ways to reach each other (the redundant path).
+# r3 is a site with two LANs, 10.66.32.0/24 and 10.66.33.0/24. Both sit inside
+# 10.66.32.0/22, so r1, r2 and r4 reach both with one summary route.
+# Other LANs are numbered after their router (r1 -> 10.66.1, r2 -> .2, r4 -> .4).
+# Links are named after the routers they join (12 = r1-r2, 23 = r2-r3, 14 = r1-r4).
+# The r3-r4 link is 43, not 34: 10.66.34.0 is inside the /22 summary range.
+#
+# Each LAN: router .1, host .10. Each link: first router named .1, second .2.
+
+student_id_last4: "4966"
+
+routers: [r1, r2, r3, r4]
+
+lans:
+  - name: lan-h1
+    network: 10.66.1.0/24
+    router: r1
+    host: h1
+  - name: lan-h2
+    network: 10.66.2.0/24
+    router: r2
+    host: h2
+  - name: lan-h3
+    network: 10.66.32.0/24
+    router: r3
+    host: h3
+  - name: lan-h4
+    network: 10.66.33.0/24
+    router: r3
+    host: h4
+  - name: lan-h5
+    network: 10.66.4.0/24
+    router: r4
+    host: h5
+
+links:
+  - [r1, r2, 10.66.12.0/30]   # r1 .1, r2 .2
+  - [r2, r3, 10.66.23.0/30]   # r2 .1, r3 .2
+  - [r4, r3, 10.66.43.0/30]   # r4 .1, r3 .2
+  - [r1, r4, 10.66.14.0/30]   # r1 .1, r4 .2
+
+routes:
+  r1:
+    - to: 10.66.2.0/24        # h2
+      via: 10.66.12.2         # r2
+    - to: 10.66.32.0/22       # summary: h3 and h4, both on r3
+      via: 10.66.12.2         # r2
+    - to: 10.66.4.0/24        # h5
+      via: 10.66.14.2         # r4
+  r2:
+    - to: 10.66.1.0/24        # h1
+      via: 10.66.12.1         # r1
+    - to: 10.66.32.0/22       # summary: h3 and h4
+      via: 10.66.23.2         # r3
+    - to: 10.66.4.0/24        # h5, two hops: through r3
+      via: 10.66.23.2         # r3
+  r3:
+    - to: 10.66.1.0/24        # h1, two hops: through r2
+      via: 10.66.23.1         # r2
+    - to: 10.66.2.0/24        # h2
+      via: 10.66.23.1         # r2
+    - to: 10.66.4.0/24        # h5
+      via: 10.66.43.1         # r4
+  r4:
+  #  - to: 10.66.1.0/24        # h1
+  #    via: 10.66.14.1         # r1
+    - to: 10.66.2.0/24        # h2, two hops: through r1
+      via: 10.66.14.1         # r1
+    - to: 10.66.32.0/22       # summary: h3 and h4
+      via: 10.66.43.2         # r3
