@@ -65,7 +65,21 @@ def routing_tables_section(spec):
         <tr><td>10.7.12.0/30</td><td>directly connected</td></tr> ...</table>
     Use esc() on every value.
     """
-    return "<p>TODO: show each router's routing table.</p>"
+    addressing = plan(spec)
+    parts = []
+    for router in spec["routers"]:
+        # Directly connected networks: one per interface.
+        entries = [(i.network, "directly connected") for i in addressing[router]]
+        # Static routes from network.yaml.
+        for r in (spec.get("routes") or {}).get(router) or []:
+            entries.append((ipaddress.ip_network(r["to"]), str(r["via"])))
+        # Longest prefix first: the order longest-prefix match prefers them.
+        entries.sort(key=lambda e: (-e[0].prefixlen, e[0]))
+        rows = "".join(f"<tr><td>{esc(net)}</td><td>{esc(nexthop)}</td></tr>" for net, nexthop in entries)
+        parts.append(
+            f"<h3>{esc(router)}</h3><table><tr><th>Destination</th><th>Next hop</th></tr>{rows}</table>"
+        )
+    return "\n".join(parts)
 
 
 def mermaid_diagram(spec):
@@ -112,6 +126,8 @@ PAGE = """<!doctype html>
   pre.mermaid {{ background: none; color: inherit; }} pre.missing {{ background: #fef2f2; color: #991b1b; }}
   .meta, .file {{ color: #6b7280; font-size: .85rem; }} code {{ font-size: .88em; }}
 </style>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
 </head>
 <body>
 <p class="meta"><a href="../">← Week 2: my network, built from data</a></p>

@@ -1,0 +1,76 @@
+/* site.css: shared look for my portfolio pages (home, Week 3 and later). */
+:root {
+  --bg: #f6f7fb; --card: #ffffff; --text: #1f2937; --muted: #6b7280;
+  --line: #e5e7eb; --accent: #2563eb; --accent-soft: #eef4ff;
+  --code-bg: #0f172a; --code-text: #e2e8f0;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1020; --card: #131a2e; --text: #e5e7eb; --muted: #9ca3af;
+    --line: #253049; --accent: #60a5fa; --accent-soft: #16213d;
+    --code-bg: #070b17; --code-text: #e2e8f0;
+  }
+}
+html { background: var(--bg); }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  max-width: 60rem; margin: 0 auto; padding: 0 1rem 4rem; line-height: 1.6;
+}
+a { color: var(--accent); }
+
+/* Navigation bar */
+.site-nav {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; flex-wrap: wrap; align-items: center; gap: .25rem;
+  padding: .75rem 0; margin-bottom: 1.5rem;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.site-nav .brand { font-weight: 700; margin-right: auto; color: var(--text); text-decoration: none; }
+.site-nav .tab {
+  padding: .3rem .8rem; border-radius: 999px; font-size: .9rem;
+  color: var(--muted); text-decoration: none;
+}
+.site-nav .tab:hover { background: var(--accent-soft); color: var(--accent); }
+.site-nav .tab[aria-current="page"] { background: var(--accent); color: #fff; }
+
+/* Week pages */
+h1 { font-size: 1.9rem; letter-spacing: -.01em; margin: .5rem 0 .25rem; }
+h2 { margin-top: 2.5rem; padding-bottom: .4rem; border-bottom: 2px solid var(--line); }
+h3 { margin-top: 1.6rem; }
+.meta, .file { color: var(--muted); font-size: .85rem; }
+table {
+  width: 100%; border-collapse: separate; border-spacing: 0; font-size: .92rem;
+  background: var(--card); border: 1px solid var(--line); border-radius: .6rem;
+  overflow: hidden; margin-bottom: 1rem;
+}
+th { background: var(--accent-soft); font-weight: 600; }
+th, td { padding: .5rem .75rem; border-bottom: 1px solid var(--line); text-align: left; }
+tr:last-child td { border-bottom: none; }
+pre {
+  background: var(--code-bg); color: var(--code-text); border-radius: .6rem;
+  padding: 1rem; overflow-x: auto; font-size: .82rem;
+}
+pre.mermaid { background: #fff; color: #111; border: 1px solid var(--line); }
+pre.missing { background: #fef2f2; color: #991b1b; }
+#answers section {
+  background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+  border-radius: .6rem; padding: .25rem 1.25rem; margin: 1rem 0;
+}
+
+/* Home page */
+.hero { padding: 1.5rem 0 1rem; }
+.hero p { color: var(--muted); max-width: 40rem; }
+.weeks { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem; }
+.week-card {
+  display: block; padding: 1.25rem; border-radius: .9rem; text-decoration: none;
+  background: var(--card); border: 1px solid var(--line); color: var(--text);
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.week-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+.week-card .num { font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.week-card h3 { margin: .35rem 0 .25rem; }
+.week-card p { margin: 0; color: var(--muted); font-size: .92rem; }
+.tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .9rem; }
+.tags span { font-size: .75rem; padding: .15rem .55rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+footer { margin-top: 3rem; }
