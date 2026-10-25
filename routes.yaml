@@ -5,17 +5,17 @@
 # checks every route first, then switches forwarding on and applies them. IPv4 only.
 
 r1:
-  - to: 10.NN.32.0/24
-    via: 10.NN.12.2
-  - to: 10.NN.32.0/20
-    via: 10.NN.13.2
+  - to: 10.66.32.0/24
+    via: 10.66.12.2
+  - to: 10.66.32.0/20
+    via: 10.66.13.2
 
 r3:
-  - to: 10.NN.32.0/20
-    via: 10.NN.23.2
-  - to: 10.NN.1.0/24
-    via: 10.NN.13.1
+  - to: 10.66.32.0/20
+    via: 10.66.23.2
+  - to: 10.66.1.0/24
+    via: 10.66.13.1
 
 r2:
-  - to: 10.NN.1.0/24
-    via: 10.NN.12.1
+  - to: 10.66.1.0/24
+    via: 10.66.12.1
