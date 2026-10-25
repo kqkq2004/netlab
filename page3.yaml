@@ -2,18 +2,32 @@
 # A few sentences each, in your own words, about YOUR network and YOUR evidence.
 # Leave a blank line between paragraphs. Never put your name or full student ID here.
 
-repository: https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
+repository: https://github.com/kqkq2004/netlab
 
 answers:
   design:
     question: "Describe your design: why these routers, LANs and links, and how you chose the addresses."
-    answer: ""
+    answer: |
+      Four routers in a ring (r1-r2-r3-r4-r1), so every pair of routers has two paths. r3 is a site with two LANs, h3 on 10.66.32.0/24 and h4 on
+      10.66.33.0/24, placed inside one /22 so the other routers need just one route for both. The other LANs are numbered after their router (10.66.1, .2, .4) and links after the routers they join; 
+      the r3-r4 link is 43, not 34, because 10.66.34.0 is inside the /22.
   summary:
     question: "Which route summarises several LANs? Which networks does it cover, why is it correct, and what else would it attract if you added a network inside its range?"
-    answer: ""
+    answer: |
+      10.66.32.0/22 on r1, r2 and r4 covers 10.66.32.0 to 10.66.35.255, which holds h3's and h4's LANs. It's correct because both are behind r3 and each
+      route's next hop leads towards r3; summary.txt shows r1 sending 10.66.32.10 and 10.66.33.10 to the same next hop, 10.66.12.2.
+
+      If I added 10.66.34.0/24 on another router, the /22 would still pull its traffic to r3, which has no route for it, unless a more specific /24 was
+      added, since longest-prefix match prefers it.
   failure:
     question: "When you took a link down, what happened, and why couldn't your routes recover even though another path existed? What would have recovered?"
-    answer: ""
+    answer: |
+      I took r1-r2 down. h1's trace to h3 stopped at r1, and r1 reported the network as unreachable: Linux deleted the static routes through that link,
+      and nothing replaced them. The path r1-r4-r3 still worked, but static routes only know what I typed; nothing detects a failure and recomputes. A routing
+      protocol such as OSPF would have recovered, or a backup static route via r4 with a higher metric.
   control_plane:
     question: "In your network, what was the control plane? Who worked out the routes, and what does that mean for a network of 40 routers?"
-    answer: ""
+    answer: |
+      I was the control plane: I worked out every route by hand and wrote them in network.yaml. build_routed.py only applied them, after check_paths() checked
+      every host pair for loops and missing routes. With 40 routers that means hundreds of routes to keep correct after every change or failure, so a real
+      network needs a routing protocol or a controller as its control plane.
