@@ -23,7 +23,7 @@ student_id_last4: "4966"
 
 underlay:
   network: 10.66.0.0/24
-  mtu: 1500                    # the largest IP packet the underlay carries
+  mtu: 9000                    # the largest IP packet the underlay carries
 
 hypervisors: [hv1, hv2, hv3, hv4]
 
