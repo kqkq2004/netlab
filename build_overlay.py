@@ -201,7 +201,36 @@ def tenant_commands(spec, hv, tenant):
     hypervisor's underlay IP; vm_ports(spec, hv) tells you which port each VM is plugged into.
     """
     cmds = []
-    # TODO: your code here
+    p = plan(spec)
+    vni = int(tenant["vni"])
+    br, vx = f"br{vni}", f"vxlan{vni}"
+    local = p["hypervisors"][hv]
+
+    # 1. A bridge for this tenant: its own private switch on this hypervisor.
+    cmds.append(f"ip link add {br} type bridge")
+    cmds.append(f"ip link set {br} up")
+
+    # 2. The VTEP: a VXLAN device with no fixed remote (the flood entries below say where to send).
+    cmds.append(f"ip link add {vx} type vxlan id {vni} local {local} dstport 4789 dev {hv}-eth0")
+
+    # 3. The VXLAN device in the bridge, up.
+    cmds.append(f"ip link set {vx} master {br}")
+    cmds.append(f"ip link set {vx} up")
+
+    # 4. This tenant's VMs on this hypervisor: their ports in the bridge, up.
+    ports = vm_ports(spec, hv)
+    for vm, where in tenant["vms"]:
+        if where == hv:
+            cmds.append(f"ip link set {ports[vm]} master {br}")
+            cmds.append(f"ip link set {ports[vm]} up")
+
+    # 5. Head-end replication: one flood entry per OTHER hypervisor hosting this tenant.
+    others = []
+    for _, where in tenant["vms"]:
+        if where != hv and where not in others:
+            others.append(where)
+    for other in sorted(others, key=list(spec["hypervisors"]).index):
+        cmds.append(f"bridge fdb append 00:00:00:00:00:00 dev {vx} dst {p['hypervisors'][other]}")
     return cmds
 
 
