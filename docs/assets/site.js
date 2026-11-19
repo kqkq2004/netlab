@@ -16,6 +16,13 @@ const WEEKS = [
     blurb: "Four routers in a ring: static routes, a summary route, path checks and a link failure.",
     tags: ["Static routes", "LPM", "traceroute"],
   },
+    {
+    week: 6,
+    path: "week6/index.html",
+    title: "Overlay your own data centre",
+    blurb: "Two tenants on the same addresses, kept apart by VXLAN across four hypervisors.",
+    tags: ["VXLAN", "Multi-tenancy", "MTU"],
+  },
 ];
 
 (function () {

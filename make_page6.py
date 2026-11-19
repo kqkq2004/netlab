@@ -114,6 +114,8 @@ PAGE = """<!doctype html>
   pre.mermaid {{ background: none; color: inherit; }} pre.missing {{ background: #fef2f2; color: #991b1b; }}
   .meta, .file {{ color: #6b7280; font-size: .85rem; }} code {{ font-size: .88em; }}
 </style>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
 </head>
 <body>
 <p class="meta"><a href="../">← Week 2: my network, built from data</a> · <a href="../week3/">Week 3: routed, from data</a></p>
